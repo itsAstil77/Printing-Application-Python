@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display-Bold:wght@400;600;700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Red Hat Display', sans-serif;
+    background: linear-gradient(135deg, #7030A0, #D3A8FF);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login Card */
+.login-card {
+    display: flex;
+    background: #F0D9FF;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 800px;
+    max-width: 90%;
+}
+
+/* Left Section */
+.left-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-section img {
+    width: 90%;
+    max-width: 300px;
+}
+
+/* Right Section */
+.right-section {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.right-section h2 {
+    color: #7030A0;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #7030A0;
+    outline: none;
+}
+
+/* Button */
+button {
+    background: #7030A0;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #5A1F80;
+}
+
+/* Extra Options */
+.extra-options {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.extra-options a {
+    color: #7030A0;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.extra-options a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .login-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .left-section img {
+        max-width: 200px;
+    }
+}

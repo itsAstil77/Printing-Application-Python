@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Employee Information</title>
+    <link rel="stylesheet" href="{% static 'app1/css/emp-main.css' %}">
+</head>
+<body>
+    <div class="employee-info-container">
+        <h1 class="header-title">PurpleIQ</h1>
+        <div class="header-right">
+            <span class="user-email">{{ email }}</span>
+            <button class="logout-button" onclick="logout()">Logout</button>
+        </div>
+    </div>    
+
+    <div class="filter-container">
+        <div class="id-card-type">
+            <label for="id-card-type-selector">Select ID Card Type:</label>
+            <select id="id-card-type-selector">
+                <option value="type1">Bahrain Staff Card</option>
+                <option value="type2">Bahrain Contractor Card</option>
+                <option value="type3">Foulath Staff Card</option>
+                <option value="type4">Foulath Contractor Card</option>
+                <option value="type5">Infotech Staff Card</option>
+                <option value="type6">Infotech Contractor Card</option>
+                <option value="type7">SULB Staff Card</option>
+                <option value="type8">SULB Contractor Card</option>
+            </select>
+        </div>
+        <div class="search-box-container">
+            <input type="text" id="search-box" class="search-box" placeholder="Search employee details..." onkeyup="filterEmployees()">
+        </div>
+        <div class="action-buttons">
+            <button onclick="generateSelectedIdCards()" class="generate-button">Generate Selected ID Cards</button>
+        </div>
+    </div>
+
+    <table class="employee-table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all-checkbox" onclick="toggleSelectAll(this)"></th>
+                <th>Sl. No.</th>
+                <th>Employee Name</th>
+                <th>Employee Id</th>
+                <th>CPR No</th>
+                <th>Company</th>
+                <th>Designation</th>
+                <th>Phone No</th>
+                <th>SOWID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employee_data %}
+                <tr onclick="toggleRowSelection(this)">
+                    <td><input type="checkbox" class="employee-checkbox" value="{{ employee.idNumber }}" onclick="event.stopPropagation();"></td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ employee.firstname }} {{ employee.lastname }}</td>
+                    <td>{{ employee.idNumber }}</td>
+                    <td>{{ employee.nationalId }}</td>
+                    <td>{{ employee.company }}</td>
+                    <td>{{ employee.designation }}</td>
+                    <td>{{ employee.phoneNumber }}</td>
+                    <td>{{ employee.sowId_vehicle_id }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="9">No employee data available</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="loading-popup" class="hidden">
+        <div class="popup-content">
+            <p>Generating ID Cards, please wait...</p>
+        </div>
+    </div>
+
+    <script src="{% static 'app1/js/emp.js' %}"></script>
+</body>
+</html>

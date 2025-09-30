@@ -1,0 +1,143 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Red Hat Display-Bold', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background:linear-gradient(135deg, #7030A0, #D3A8FF);
+}
+
+/* OTP Container */
+.otp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+/* OTP Box */
+.otp-box {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Title */
+.otp-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #7030A0;
+    margin-bottom: 20px;
+}
+
+/* Input Group */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1.8px solid #D0D0D0;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+    transition: border 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #7030A0;
+    outline: none;
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: #7030A0;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-submit:disabled {
+    background: #C0A9D9;
+    cursor: not-allowed;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background: #5B2386;
+}
+
+/* Resend OTP Button */
+.btn-resend {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: #7030A0;
+    border: 2px solid #7030A0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.btn-resend:hover {
+    background: #7030A0;
+    color: white;
+}
+
+/* Message Styles */
+.messages {
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.success {
+    color: #28A745;
+}
+
+.error {
+    color: #D93025;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .otp-box {
+        padding: 25px;
+    }
+    .otp-title {
+        font-size: 20px;
+    }
+    .btn-submit, .btn-resend {
+        font-size: 14px;
+        padding: 10px;
+    }
+}

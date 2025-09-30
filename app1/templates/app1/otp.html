@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Two-Factor Authentication</title>
+    <link rel="stylesheet" href="{% static 'app1/css/otp-sub.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="otp-container">
+        <div class="otp-box">
+            <h2 class="otp-title">Verification Code</h2>
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <p class="{{ message.tags }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form method="post" action="{% url 'otp' %}">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="otp">Enter OTP</label>
+                    <input type="text" name="otp" id="otp" required oninput="checkOTP()">
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn" disabled>Submit</button>
+            </form>
+            <form method="post" action="{% url 'resend_otp' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-resend">Resend OTP</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function checkOTP() {
+            const otpInput = document.getElementById('otp');
+            const submitBtn = document.getElementById('submitBtn');
+
+            submitBtn.disabled = otpInput.value.trim() === '';
+        }
+    </script>
+</body>
+</html>
