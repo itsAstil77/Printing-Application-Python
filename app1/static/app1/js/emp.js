@@ -61,8 +61,9 @@ function generateSelectedIdCards() {
                     <title>Print ID Cards</title>
                     <style>
                         @page {
-                            size: CR80;
+                            size: 8.56cm 5.4cm; 
                             margin: 0;
+                            
                         }
                         body {
                             margin: 0;
@@ -80,6 +81,7 @@ function generateSelectedIdCards() {
                             align-items: center;
                             margin:0;
                             padding;0
+                            page-break-after: always;
                         }
                         .id-card-container:last-child {
                             page-break-before: auto !important;
