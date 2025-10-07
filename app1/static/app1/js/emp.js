@@ -68,7 +68,6 @@ function generateSelectedIdCards() {
                         body {
                             margin: 0;
                             padding: 0;
-                            display: flex;
                             flex-direction: column;
                             align-items: center;
                         }
@@ -76,12 +75,11 @@ function generateSelectedIdCards() {
                             page-break-before: always;
                             width: auto;
                             height: auto;
-                            display: flex;
                             justify-content: center;
                             align-items: center;
                             margin:0;
                             padding;0
-                            page-break-after: always;
+                            
                         }
                         .id-card-container:last-child {
                             page-break-before: auto !important;
@@ -90,20 +88,17 @@ function generateSelectedIdCards() {
 
                         .id-card {
                             width: 8.56cm;
-                            height: 5.4cm;
-                            box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
-                            border-radius: 6px;
+                            height: 5.40cm;
                             background-color: white;
-                            display: flex;
                             justify-content: center;
                             align-items: center;
-                            padding: 5px;
+                            
                         }
                         .id-card img {
                             width: 100%;
                             height: 100%;
                             object-fit: cover;
-                            border-radius: 8px;
+                            
                         }
                         .id-card-container:not(:first-child) {
                             page-break-before: always;

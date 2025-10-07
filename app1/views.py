@@ -188,7 +188,7 @@ def employee_info_view(request):
     })
 
 ID_CARD_SAVE_PATH = os.path.join(settings.MEDIA_ROOT, 'generated_id_cards')
-FONT_PATH = os.path.join(settings.BASE_DIR, 'app1', 'static', 'app1', 'fonts', 'RedHatDisplay-Medium.ttf')
+FONT_PATH = os.path.join(settings.BASE_DIR, 'app1', 'static', 'app1', 'fonts','RedHatDisplay-Bold.ttf')
 
 TEMPLATE_PATHS = {
     'type1': 'http://piqapi.foulath.com.bh/uploads/PrintingCards/BahrainStaffCard.jpg',
@@ -199,8 +199,6 @@ TEMPLATE_PATHS = {
     'type6': 'http://piqapi.foulath.com.bh/uploads/PrintingCards/InfotechContractorCard.jpg',
     'type7': 'http://piqapi.foulath.com.bh/uploads/PrintingCards/SulbStaffCard.jpg',
     'type8': 'http://piqapi.foulath.com.bh/uploads/PrintingCards/SulbContractorCard.jpg'
-
-
 }
 
 os.makedirs(ID_CARD_SAVE_PATH, exist_ok=True)
@@ -232,6 +230,325 @@ def fetch_employee_data(employee_id):
 
 
 @csrf_exempt
+# def generate_selected_id_cards(request):
+#     try:
+#         if request.method != 'POST':
+#             return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+#         try:
+#             data = json.loads(request.body)
+#             employee_ids = data.get('employee_ids', [])
+#             card_type = data.get('card_type', '')
+#         except (json.JSONDecodeError, TypeError):
+#             employee_ids = request.POST.getlist('employee_ids[]') or request.POST.getlist('employee_ids')
+#             card_type = request.POST.get('card_type', '')
+
+#         print("DEBUG: Received employee_ids:", employee_ids)
+#         print("DEBUG: Received card_type:", card_type)
+
+#         if not employee_ids or not card_type:
+#             return JsonResponse({'message': 'Employee IDs and card type are required'}, status=400)
+
+#         template_url = TEMPLATE_PATHS.get(card_type)
+#         if not template_url:
+#             return JsonResponse({'message': f'Invalid card type: {card_type}'}, status=400)
+
+#         response = requests.get(template_url)
+#         if response.status_code != 200:
+#             return JsonResponse({'message': f'Template image could not be fetched from {template_url}. Status: {response.status_code}'}, status=500)
+
+#         template_image = Image.open(BytesIO(response.content)).convert("RGB")
+
+#         try:
+#             font_large = ImageFont.truetype(FONT_PATH, 27)
+#             font_medium = ImageFont.truetype(FONT_PATH, 27)
+#             font_small = ImageFont.truetype(FONT_PATH, 27)
+
+#             FONT_BOLD_PATH = os.path.join(settings.BASE_DIR, 'app1', 'static', 'app1', 'fonts', 'RedHatDisplay-Bold.ttf')
+#             font_xlarge = ImageFont.truetype(FONT_BOLD_PATH, 81)
+
+#         except OSError:
+#             print(f"WARNING: Font not found. Using default font.")
+#             font_large = font_medium = font_small = font_xlarge = ImageFont.load_default()
+
+#         font_map = {
+#             "large": font_large,
+#             "medium": font_medium,
+#             "small": font_small,
+#             "xlarge": font_xlarge
+#         }
+
+#         LAYOUTS = {
+#             "group1": {  
+#                 "image_size": (237, 317),=True, quality=85)
+#             generated_files.append(output_filename)
+
+#         return JsonResponse({'message': 'ID cards generated successfully!', 'files': generated_files})
+
+#     except Exception as e:
+#         print(f"Error in generate_selected_id_cards: {str(e)}")
+#         return JsonResponse({'message': f'Error generating ID cards: {str(e)}'}, status=500)
+#                 "image_pos": (729, 186),
+#                 "fields": [
+#                     {"key": "firstname", "pos": (235, 253), "font": "large", "suffix": " {lastname}"},
+#                     {"key": "designation", "pos": (235, 312), "font": "medium"},
+#                     {"key": "idNumber", "pos": (235, 367), "font": "small"},
+#                     {"key": "nationalId", "pos": (235, 428), "font": "small"},
+#                     {"key": "endDate", "pos": (235, 490), "font": "small"},
+#                     {"key": "company", "pos": (500, 545), "font": "xlarge", "center": True, "container_width": 1000}
+#                 ]
+#             },
+#             "group2": {  
+#                 "image_size": (237, 317),
+#                 "image_pos": (729, 186),
+#                 "fields": [
+#                     {"key": "firstname", "pos": (235, 247), "font": "large", "suffix": " {lastname}"},
+#                     {"key": "designation", "pos": (235, 312), "font": "medium"},
+#                     {"key": "nationalId", "pos": (235, 382), "font": "small"},
+#                     {"key": "endDate", "pos": (235, 442), "font": "small"},
+#                     {"key": "department", "pos": (500, 545), "font": "xlarge", "center": True, "container_width": 1000} 
+#                 ]
+#             }
+#         }
+
+        
+
+#         GROUP_MAPPING = {
+#             "type1": "group1", "type3": "group1", "type5": "group1", "type7": "group1",
+#             "type2": "group2", "type4": "group2", "type6": "group2", "type8": "group2",
+#         }
+
+#         generated_files = []
+
+#         for employee_id in employee_ids:
+#             employee = fetch_employee_data(employee_id)
+#             if not employee:
+#                 print(f"WARNING: Employee data not found for ID: {employee_id}")
+#                 continue
+
+#             id_card = template_image.copy()
+#             draw = ImageDraw.Draw(id_card)
+
+#             # Select layout group
+#             layout_key = GROUP_MAPPING.get(card_type, "group1")
+#             layout = LAYOUTS[layout_key]
+
+#             # Employee photo
+#             employee_image_url = employee.get('employeeImage')
+#             if employee_image_url:
+#                 try:
+#                     img_response = requests.get(employee_image_url)
+#                     if img_response.status_code == 200:
+#                         emp_img = Image.open(BytesIO(img_response.content)).convert('RGB')
+#                         emp_img = ImageOps.exif_transpose(emp_img)
+#                         emp_img = ImageOps.fit(emp_img, layout["image_size"], method=Image.LANCZOS, centering=(0.5, 0.3))
+#                         id_card.paste(emp_img, layout["image_pos"])
+#                 except Exception as e:
+#                     print(f"Error loading employee image for {employee_id}: {e}")
+            
+#             # Draw fields dynamically
+# for field in layout["fields"]:
+#     value = employee.get(field["key"], "N/A")
+#     if "{lastname}" in field.get("suffix", ""):
+#         value = f"{employee.get('firstname', 'N/A')} {employee.get('lastname', '')}"
+#     text = f"{field.get('prefix', '')}{value}{field.get('suffix', '').replace('{lastname}', '')}"
+#     font = font_map.get(field["font"], font_small)
+    
+#     # Center alignment logic
+#     if field.get("center", False):
+#         # Get text dimensions
+#         bbox = draw.textbbox((0, 0), text, font=font)
+#         text_width = bbox[2] - bbox[0]
+        
+#         # Calculate centered position
+#         container_width = field.get("container_width", template_image.width)
+#         center_x = (container_width - text_width) // 2
+#         centered_pos = (center_x, field["pos"][1])
+        
+#         print(f"DEBUG: Centering text '{text}' at x={center_x} (text_width={text_width}, container={container_width})")
+        
+#         draw.text(centered_pos, text, fill="black", font=font)
+#     else:
+#         # Original left alignment
+#         draw.text(field["pos"], text, fill="black", font=font)
+
+#             # Draw fields dynamically
+#             # Draw fields dynamically
+# for field in layout["fields"]:
+#     value = employee.get(field["key"], "N/A")
+#     if "{lastname}" in field.get("suffix", ""):
+#         value = f"{employee.get('firstname', 'N/A')} {employee.get('lastname', '')}"
+#     text = f"{field.get('prefix', '')}{value}{field.get('suffix', '').replace('{lastname}', '')}"
+#     font = font_map.get(field["font"], font_small)
+    
+#     # Center alignment logic
+#     if field.get("center", False):
+#         # Get text dimensions
+#         bbox = draw.textbbox((0, 0), text, font=font)
+#         text_width = bbox[2] - bbox[0]
+        
+#         # Calculate centered position
+#         container_width = field.get("container_width", template_image.width)
+#         center_x = (container_width - text_width) // 2
+#         centered_pos = (center_x, field["pos"][1])
+        
+#         print(f"DEBUG: Centering text '{text}' at x={center_x} (text_width={text_width}, container={container_width})")
+        
+#         draw.text(centered_pos, text, fill="black", font=font)
+#     else:
+#         # Original left alignment
+#         draw.text(field["pos"], text, fill="black", font=font)
+
+#             # Save file
+#             id_card = id_card.convert("RGB")
+#             output_filename = f"{employee['idNumber']}_{card_type}_id_card.png"
+#             output_path = os.path.join(ID_CARD_SAVE_PATH, output_filename)
+#             id_card.save(output_path, format="PNG", optimize=True, quality=85)
+#             generated_files.append(output_filename)
+
+#         return JsonResponse({'message': 'ID cards generated successfully!', 'files': generated_files})
+
+#     except Exception as e:
+#         print(f"Error in generate_selected_id_cards: {str(e)}")
+#         return JsonResponse({'message': f'Error generating ID cards: {str(e)}'}, status=500)
+# def generate_selected_id_cards(request):
+#     try:
+#         if request.method != 'POST':
+#             return JsonResponse({'message': 'Invalid request method'}, status=405)
+
+#         try:
+#             data = json.loads(request.body)
+#             employee_ids = data.get('employee_ids', [])
+#             card_type = data.get('card_type', '')
+#         except (json.JSONDecodeError, TypeError):
+#             employee_ids = request.POST.getlist('employee_ids[]') or request.POST.getlist('employee_ids')
+#             card_type = request.POST.get('card_type', '')
+
+#         print("DEBUG: Received employee_ids:", employee_ids)
+#         print("DEBUG: Received card_type:", card_type)
+
+#         if not employee_ids or not card_type:
+#             return JsonResponse({'message': 'Employee IDs and card type are required'}, status=400)
+
+#         template_url = TEMPLATE_PATHS.get(card_type)
+#         if not template_url:
+#             return JsonResponse({'message': f'Invalid card type: {card_type}'}, status=400)
+
+#         response = requests.get(template_url)
+#         if response.status_code != 200:
+#             return JsonResponse({'message': f'Template image could not be fetched from {template_url}. Status: {response.status_code}'}, status=500)
+
+#         template_image = Image.open(BytesIO(response.content)).convert("RGB")
+
+#         try:
+#             font_large = ImageFont.truetype(FONT_PATH, 27)
+#             font_medium = ImageFont.truetype(FONT_PATH, 27)
+#             font_small = ImageFont.truetype(FONT_PATH, 27)
+
+#             FONT_BOLD_PATH = os.path.join(settings.BASE_DIR, 'app1', 'static', 'app1', 'fonts', 'RedHatDisplay-Bold.ttf')
+#             font_xlarge = ImageFont.truetype(FONT_BOLD_PATH, 75)
+
+#         except OSError:
+#             print(f"WARNING: Font not found. Using default font.")
+#             font_large = font_medium = font_small = font_xlarge = ImageFont.load_default()
+
+#         font_map = {
+#             "large": font_large,
+#             "medium": font_medium,
+#             "small": font_small,
+#             "xlarge": font_xlarge
+#         }
+
+#         LAYOUTS = {
+#             "group1": {  
+#                 "image_size": (237, 317),
+#                 "image_pos": (729, 186),
+#                 "fields": [
+#                     {"key": "firstname", "pos": (235, 253), "font": "large", "suffix": " {lastname}"},
+#                     {"key": "designation", "pos": (235, 312), "font": "medium"},
+#                     {"key": "idNumber", "pos": (235, 367), "font": "small"},
+#                     {"key": "nationalId", "pos": (235, 428), "font": "small"},
+#                     {"key": "endDate", "pos": (235, 490), "font": "small"},
+#                     {"key": "company", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000}
+#                 ]
+#             },
+#             "group2": {  
+#                 "image_size": (237, 317),
+#                 "image_pos": (729, 186),
+#                 "fields": [
+#                     {"key": "firstname", "pos": (235, 247), "font": "large", "suffix": " {lastname}"},
+#                     {"key": "designation", "pos": (235, 312), "font": "medium"},
+#                     {"key": "nationalId", "pos": (235, 382), "font": "small"},
+#                     {"key": "endDate", "pos": (235, 442), "font": "small"},
+#                     {"key": "department", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000} 
+#                 ]
+#             }
+#         }
+
+#         GROUP_MAPPING = {
+#             "type1": "group1", "type3": "group1", "type5": "group1", "type7": "group1",
+#             "type2": "group2", "type4": "group2", "type6": "group2", "type8": "group2",
+#         }
+
+#         generated_files = []
+
+#         for employee_id in employee_ids:
+#             employee = fetch_employee_data(employee_id)
+#             if not employee:
+#                 print(f"WARNING: Employee data not found for ID: {employee_id}")
+#                 continue
+
+#             id_card = template_image.copy()
+#             draw = ImageDraw.Draw(id_card)
+
+#             layout_key = GROUP_MAPPING.get(card_type, "group1")
+#             layout = LAYOUTS[layout_key]
+
+#             employee_image_url = employee.get('employeeImage')
+#             if employee_image_url:
+#                 try:
+#                     img_response = requests.get(employee_image_url)
+#                     if img_response.status_code == 200:
+#                         emp_img = Image.open(BytesIO(img_response.content)).convert('RGB')
+#                         emp_img = ImageOps.exif_transpose(emp_img)
+#                         emp_img = ImageOps.fit(emp_img, layout["image_size"], method=Image.LANCZOS, centering=(0.5, 0.3))
+#                         id_card.paste(emp_img, layout["image_pos"])
+#                 except Exception as e:
+#                     print(f"Error loading employee image for {employee_id}: {e}")
+
+#             for field in layout["fields"]:
+#                 value = employee.get(field["key"], "N/A")
+#                 if "{lastname}" in field.get("suffix", ""):
+#                     value = f"{employee.get('firstname', 'N/A')} {employee.get('lastname', '')}"
+#                 text = f"{field.get('prefix', '')}{value}{field.get('suffix', '').replace('{lastname}', '')}"
+#                 font = font_map.get(field["font"], font_small)
+                
+#                 if field.get("center", False):
+#                     bbox = draw.textbbox((0, 0), text, font=font)
+#                     text_width = bbox[2] - bbox[0]
+                    
+#                     container_width = field.get("container_width", template_image.width)
+#                     center_x = (container_width - text_width) // 2
+#                     centered_pos = (center_x, field["pos"][1])
+                    
+#                     print(f"DEBUG: Centering text '{text}' at x={center_x} (text_width={text_width}, container={container_width})")
+                    
+#                     draw.text(centered_pos, text, fill="black", font=font)
+#                 else:
+#                     draw.text(field["pos"], text, fill="black", font=font)
+
+#             # Save file
+#             id_card = id_card.convert("RGB")
+#             output_filename = f"{employee['idNumber']}_{card_type}_id_card.png"
+#             output_path = os.path.join(ID_CARD_SAVE_PATH, output_filename)
+#             id_card.save(output_path, format="PNG", optimize=True, quality=85)
+#             generated_files.append(output_filename)
+
+#         return JsonResponse({'message': 'ID cards generated successfully!', 'files': generated_files})
+
+#     except Exception as e:
+#         print(f"Error in generate_selected_id_cards: {str(e)}")
+#         return JsonResponse({'message': f'Error generating ID cards: {str(e)}'}, status=500)
 def generate_selected_id_cards(request):
     try:
         if request.method != 'POST':
@@ -262,9 +579,9 @@ def generate_selected_id_cards(request):
         template_image = Image.open(BytesIO(response.content)).convert("RGB")
 
         try:
-            font_large = ImageFont.truetype(FONT_PATH, 24)
-            font_medium = ImageFont.truetype(FONT_PATH, 24)
-            font_small = ImageFont.truetype(FONT_PATH, 24)
+            font_large = ImageFont.truetype(FONT_PATH, 27)
+            font_medium = ImageFont.truetype(FONT_PATH, 27)
+            font_small = ImageFont.truetype(FONT_PATH, 27)
 
             FONT_BOLD_PATH = os.path.join(settings.BASE_DIR, 'app1', 'static', 'app1', 'fonts', 'RedHatDisplay-Bold.ttf')
             font_xlarge = ImageFont.truetype(FONT_BOLD_PATH, 81)
@@ -285,33 +602,66 @@ def generate_selected_id_cards(request):
                 "image_size": (237, 317),
                 "image_pos": (729, 186),
                 "fields": [
-                    {"key": "firstname", "pos": (235, 253), "font": "large", "suffix": " {lastname}"},
-                    {"key": "designation", "pos": (235, 312), "font": "medium"},
+                    {"key": "firstname", "pos": (235, 253), "font": "large", "suffix": " {lastname}", "max_width": 450, "line_height": 30},
+                    {"key": "designation", "pos": (235, 312), "font": "medium", "max_width": 450, "line_height": 30},
                     {"key": "idNumber", "pos": (235, 367), "font": "small"},
                     {"key": "nationalId", "pos": (235, 428), "font": "small"},
                     {"key": "endDate", "pos": (235, 490), "font": "small"},
-                    {"key": "company", "pos":(242,522), "font":"xlarge"}
+                    {"key": "company", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000}
                 ]
             },
             "group2": {  
                 "image_size": (237, 317),
                 "image_pos": (729, 186),
                 "fields": [
-                    {"key": "firstname", "pos": (235, 247), "font": "large", "suffix": " {lastname}"},
-                    {"key": "designation", "pos": (235, 312), "font": "medium"},
+                    {"key": "firstname", "pos": (235, 247), "font": "large", "suffix": " {lastname}", "max_width": 450, "line_height": 30},
+                    {"key": "designation", "pos": (235, 312), "font": "medium", "max_width": 450, "line_height": 30},
                     {"key": "nationalId", "pos": (235, 382), "font": "small"},
                     {"key": "endDate", "pos": (235, 442), "font": "small"},
-                    {"key": "department", "pos":(242,522),"font":"xlarge"}
+                    {"key": "department", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000} 
                 ]
             }
         }
-
-        
 
         GROUP_MAPPING = {
             "type1": "group1", "type3": "group1", "type5": "group1", "type7": "group1",
             "type2": "group2", "type4": "group2", "type6": "group2", "type8": "group2",
         }
+
+        def draw_wrapped_text(draw, text, position, font, max_width=None, line_height=30, fill="black"):
+            """
+            Draw text with automatic word wrapping
+            """
+            if not max_width:
+                draw.text(position, text, fill=fill, font=font)
+                return [position[1]]
+            
+            x, y = position
+            lines = []
+            words = text.split()
+            current_line = []
+            
+            for word in words:
+                test_line = ' '.join(current_line + [word])
+                bbox = draw.textbbox((0, 0), test_line, font=font)
+                text_width = bbox[2] - bbox[0]
+                
+                if text_width <= max_width:
+                    current_line.append(word)
+                else:
+                    if current_line:
+                        lines.append(' '.join(current_line))
+                    current_line = [word]
+            
+            if current_line:
+                lines.append(' '.join(current_line))
+            
+            y_positions = []
+            for i, line in enumerate(lines):
+                draw.text((x, y + (i * line_height)), line, fill=fill, font=font)
+                y_positions.append(y + (i * line_height))
+            
+            return y_positions
 
         generated_files = []
 
@@ -324,11 +674,9 @@ def generate_selected_id_cards(request):
             id_card = template_image.copy()
             draw = ImageDraw.Draw(id_card)
 
-            # Select layout group
             layout_key = GROUP_MAPPING.get(card_type, "group1")
             layout = LAYOUTS[layout_key]
 
-            # Employee photo
             employee_image_url = employee.get('employeeImage')
             if employee_image_url:
                 try:
@@ -341,16 +689,33 @@ def generate_selected_id_cards(request):
                 except Exception as e:
                     print(f"Error loading employee image for {employee_id}: {e}")
 
-            # Draw fields dynamically
             for field in layout["fields"]:
                 value = employee.get(field["key"], "N/A")
                 if "{lastname}" in field.get("suffix", ""):
                     value = f"{employee.get('firstname', 'N/A')} {employee.get('lastname', '')}"
                 text = f"{field.get('prefix', '')}{value}{field.get('suffix', '').replace('{lastname}', '')}"
                 font = font_map.get(field["font"], font_small)
-                draw.text(field["pos"], text, fill="black", font=font)
+                
+                if field.get("center", False):
+                    bbox = draw.textbbox((0, 0), text, font=font)
+                    text_width = bbox[2] - bbox[0]
+                    
+                    container_width = field.get("container_width", template_image.width)
+                    center_x = (container_width - text_width) // 2
+                    centered_pos = (center_x, field["pos"][1])
+                    
+                    print(f"DEBUG: Centering text '{text}' at x={center_x} (text_width={text_width}, container={container_width})")
+                    
+                    draw.text(centered_pos, text, fill="black", font=font)
+                
+                elif field.get("max_width"):
+                    max_width = field.get("max_width", 450)
+                    line_height = field.get("line_height", 30)
+                    draw_wrapped_text(draw, text, field["pos"], font, max_width, line_height, "black")
+                
+                else:
+                    draw.text(field["pos"], text, fill="black", font=font)
 
-            # Save file
             id_card = id_card.convert("RGB")
             output_filename = f"{employee['idNumber']}_{card_type}_id_card.png"
             output_path = os.path.join(ID_CARD_SAVE_PATH, output_filename)
