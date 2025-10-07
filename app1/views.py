@@ -230,7 +230,6 @@ def fetch_employee_data(employee_id):
 
 
 @csrf_exempt
-
 def generate_selected_id_cards(request):
     try:
         if request.method != 'POST':
@@ -279,36 +278,23 @@ def generate_selected_id_cards(request):
             "xlarge": font_xlarge
         }
 
-        LAYOUTS = {
-            "group1": {  
-                "image_size": (237, 317),
-                "image_pos": (729, 186),
-                "fields": [
-                    {"key": "firstname", "pos": (235, 253), "font": "large", "suffix": " {lastname}", "max_width": 450, "line_height": 30},
-                    {"key": "designation", "pos": (235, 312), "font": "medium", "max_width": 450, "line_height": 30},
-                    {"key": "idNumber", "pos": (235, 367), "font": "small"},
-                    {"key": "nationalId", "pos": (235, 428), "font": "small"},
-                    {"key": "endDate", "pos": (235, 490), "font": "small"},
-                    {"key": "company", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000}
-                ]
-            },
-            "group2": {  
-                "image_size": (237, 317),
-                "image_pos": (729, 186),
-                "fields": [
-                    {"key": "firstname", "pos": (235, 247), "font": "large", "suffix": " {lastname}", "max_width": 450, "line_height": 30},
-                    {"key": "designation", "pos": (235, 312), "font": "medium", "max_width": 450, "line_height": 30},
-                    {"key": "nationalId", "pos": (235, 382), "font": "small"},
-                    {"key": "endDate", "pos": (235, 442), "font": "small"},
-                    {"key": "department", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000} 
-                ]
-            }
-        }
-
-        GROUP_MAPPING = {
-            "type1": "group1", "type3": "group1", "type5": "group1", "type7": "group1",
-            "type2": "group2", "type4": "group2", "type6": "group2", "type8": "group2",
-        }
+        def capitalize_name(name):
+            """
+            Capitalize only the first letter of each word in a name
+            and make the rest lowercase
+            """
+            if not name or name == "N/A":
+                return name
+            
+            words = name.split()
+            capitalized_words = []
+            
+            for word in words:
+                if word:  
+                    capitalized_word = word[0].upper() + word[1:].lower()
+                    capitalized_words.append(capitalized_word)
+            
+            return ' '.join(capitalized_words)
 
         def draw_wrapped_text(draw, text, position, font, max_width=None, line_height=30, fill="black"):
             """
@@ -345,6 +331,37 @@ def generate_selected_id_cards(request):
             
             return y_positions
 
+        LAYOUTS = {
+            "group1": {  
+                "image_size": (237, 317),
+                "image_pos": (729, 186),
+                "fields": [
+                    {"key": "firstname", "pos": (235, 253), "font": "large", "suffix": " {lastname}", "max_width": 450, "line_height": 30, "capitalize": True},
+                    {"key": "designation", "pos": (235, 312), "font": "medium", "max_width": 450, "line_height": 30, "capitalize": True},
+                    {"key": "idNumber", "pos": (235, 367), "font": "small"},
+                    {"key": "nationalId", "pos": (235, 428), "font": "small"},
+                    {"key": "endDate", "pos": (235, 490), "font": "small"},
+                    {"key": "company", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000}
+                ]
+            },
+            "group2": {  
+                "image_size": (237, 317),
+                "image_pos": (729, 186),
+                "fields": [
+                    {"key": "firstname", "pos": (235, 247), "font": "large", "suffix": " {lastname}", "max_width": 450, "line_height": 30, "capitalize": True},
+                    {"key": "designation", "pos": (235, 312), "font": "medium", "max_width": 450, "line_height": 30, "capitalize": True},
+                    {"key": "nationalId", "pos": (235, 382), "font": "small"},
+                    {"key": "endDate", "pos": (235, 442), "font": "small"},
+                    {"key": "department", "pos": (500, 530), "font": "xlarge", "center": True, "container_width": 1000} 
+                ]
+            }
+        }
+
+        GROUP_MAPPING = {
+            "type1": "group1", "type3": "group1", "type5": "group1", "type7": "group1",
+            "type2": "group2", "type4": "group2", "type6": "group2", "type8": "group2",
+        }
+
         generated_files = []
 
         for employee_id in employee_ids:
@@ -373,8 +390,20 @@ def generate_selected_id_cards(request):
 
             for field in layout["fields"]:
                 value = employee.get(field["key"], "N/A")
-                if "{lastname}" in field.get("suffix", ""):
-                    value = f"{employee.get('firstname', 'N/A')} {employee.get('lastname', '')}"
+                
+                if field.get("capitalize", False) and value != "N/A":
+                    if field["key"] == "firstname" and "{lastname}" in field.get("suffix", ""):
+                        firstname = capitalize_name(employee.get('firstname', 'N/A'))
+                        lastname = capitalize_name(employee.get('lastname', ''))
+                        value = f"{firstname} {lastname}"
+                    else:
+                        value = capitalize_name(value)
+                
+                elif "{lastname}" in field.get("suffix", ""):
+                    firstname = capitalize_name(employee.get('firstname', 'N/A'))
+                    lastname = capitalize_name(employee.get('lastname', ''))
+                    value = f"{firstname} {lastname}"
+                
                 text = f"{field.get('prefix', '')}{value}{field.get('suffix', '').replace('{lastname}', '')}"
                 font = font_map.get(field["font"], font_small)
                 
